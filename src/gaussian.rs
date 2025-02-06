@@ -49,11 +49,11 @@ impl Gaussian {
 		let r4c = (a[3][y], a[y][y]);
 
 		for i in 0..=y {
-			println!("{} | {}", rf(&a[i]), rf(&[b[i]]));
+			println!("{} ¦ {}", rf(&a[i]), rf(&[b[i]]));
 		}
 
 		for i in (y+1)..4 {
-			println!("{} | {} <-- R{} = {}R{} - {}R{}", rf(&a[i]), rf(&[b[i]]), i+1, Self::c(a[i][y]), 1, Self::c(a[y][y]), i + 1)
+			println!("{} ¦ {} <-- R{} = {}R{} - {}R{}", rf(&a[i]), rf(&[b[i]]), i+1, Self::c(a[i][y]), 1, Self::c(a[y][y]), i + 1)
 		}
 
 		for i in y..4 {
@@ -74,11 +74,11 @@ impl Gaussian {
 		println!("");
 
 		for i in 0..=y {
-			println!("{} | {}", rf(&a[i]), rf(&[b[i]]));
+			println!("{} ¦ {}", rf(&a[i]), rf(&[b[i]]));
 		}
 
 		for i in (y+1)..4 {
-			println!("{} | {} <-- R{} = {}R{} - {}R{}", rf(&a[i]), rf(&[b[i]]), i+1, Self::c(a[i][y]), y+1, Self::c(a[y][y]), i + 1);
+			println!("{} ¦ {} <-- R{} = {}R{} - {}R{}", rf(&a[i]), rf(&[b[i]]), i+1, Self::c(a[i][y]), y+1, Self::c(a[y][y]), i + 1);
 		}
 
 		for i in y..4 {
@@ -98,11 +98,11 @@ impl Gaussian {
 		println!("");
 
 		for i in 0..=y {
-			println!("{} | {}", rf(&a[i]), rf(&[b[i]]));
+			println!("{} ¦ {}", rf(&a[i]), rf(&[b[i]]));
 		}
 
 		for i in (y+1)..4 {
-			println!("{} | {} <-- R{} = {}R{} - {}R{}", rf(&a[i]), rf(&[b[i]]), i+1, Self::c(a[i][y]), y+1, Self::c(a[y][y]), i + 1)
+			println!("{} ¦ {} <-- R{} = {}R{} - {}R{}", rf(&a[i]), rf(&[b[i]]), i+1, Self::c(a[i][y]), y+1, Self::c(a[y][y]), i + 1)
 		}
 
 		for i in y..4 {
@@ -113,6 +113,12 @@ impl Gaussian {
 		println!("");
 
 		y += 1;
+
+		for i in 0..=y {
+			println!("{} ¦ {}", rf(&a[i]), rf(&[b[i]]));
+		}
+
+		println!("");
 
 		
 		
@@ -152,11 +158,11 @@ impl Gaussian {
 		let r3c = (a[2][y], a[y][y]);
 
 		for i in 0..=y {
-			println!("{} | {}", rf(&a[i]), rf(&[b[i]]));
+			println!("{} ¦ {}", rf(&a[i]), rf(&[b[i]]));
 		}
 
 		for i in (y+1)..n {
-			println!("{} | {} <-- R{} = {}R{} - {}R{}", rf(&a[i]), rf(&[b[i]]), i+1, Self::c(a[i][y]), 1, Self::c(a[y][y]), i + 1)
+			println!("{} ¦ {} <-- R{} = {}R{} - {}R{}", rf(&a[i]), rf(&[b[i]]), i+1, Self::c(a[i][y]), 1, Self::c(a[y][y]), i + 1)
 		}
 
 		for i in y..n {
@@ -174,45 +180,28 @@ impl Gaussian {
 		println!("");
 
 		for i in 0..=y {
-			println!("{} | {}", rf(&a[i]), rf(&[b[i]]));
+			println!("{} ¦ {}", rf(&a[i]), rf(&[b[i]]));
 		}
 
 		for i in (y+1)..n {
-			println!("{} | {} <-- R{} = {}R{} - {}R{}", rf(&a[i]), rf(&[b[i]]), i+1, Self::c(a[i][y]), y+1, Self::c(a[y][y]), i + 1);
+			println!("{} ¦ {} <-- R{} = {}R{} - {}R{}", rf(&a[i]), rf(&[b[i]]), i+1, Self::c(a[i][y]), y+1, Self::c(a[y][y]), i + 1);
 		}
 
 		for i in y..n {
 			a[2][i] = (r3c.0 * a[y][i]) - (r3c.1 * a[2][i]);
 		}
 		b[2] = (r3c.0 * b[y]) - (r3c.1 * b[2]);
-
-				
-		// step 3
-		// y = 2;
-		// let r4c = (a[3][y], a[y][y]);
-
-		
-
-		// println!("");
-
-		// for i in 0..=y {
-		// 	println!("{} | {}", rf(&a[i]), rf(&[b[i]]));
-		// }
-
-		// for i in (y+1)..4 {
-		// 	println!("{} | {} <-- R{} = {}R{} - {}R{}", rf(&a[i]), rf(&[b[i]]), i+1, Self::c(a[i][y]), y+1, Self::c(a[y][y]), i + 1)
-		// }
-
-		// for i in y..4 {
-		// 	a[3][i] = (r4c.0 * a[y][i]) - (r4c.1 * a[3][i]);
-		// }
-		// b[3] = (r4c.0 * b[y]) - (r4c.1 * b[3]);
-
 		println!("");
 
 		y += 1;
 
-		
+		for i in 0..=y {
+			println!("{} ¦ {}", rf(&a[i]), rf(&[b[i]]));
+		}
+
+		println!("");
+
+
 		
 		let x3 = b[2]/a[2][2];
 		let x2 = (b[1] - (a[1][2] * x3))/a[1][1];
@@ -227,7 +216,7 @@ impl Gaussian {
 		];
 
 		for i in (0..=y).rev() {
-			println!("{} | {} ===> {}", rf(&a[i]), rf(&[b[i]]), solves[i]);
+			println!("{} ¦ {} ===> {}", rf(&a[i]), rf(&[b[i]]), solves[i]);
 		}
 
 		println!("");

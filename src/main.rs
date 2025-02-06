@@ -1,4 +1,4 @@
-use std::{io::Write, panic};
+use std::{io::{Read, Write}, panic};
 
 use gaussian::Gaussian;
 #[allow(dead_code)]
@@ -8,36 +8,33 @@ mod gaussian;
 fn main() {
     // println!("Hello, world!");
     let args = std::env::args().collect::<Vec<_>>();
-    run(args[1].clone());
 
-    match args[1].as_str() {
-        "c" | "cramer"  => {
-            let a = get_input(args[2].to_owned());
-            let b = get_b_input(args[2].to_owned());
+    if args.len() >= 2 {
+        run(args[1].to_owned(), args[2].to_owned());
+    } else {
+        let mut command = String::new();
+        print!("Input a command: ");
+        std::io::stdout().flush().expect("Unable to flush stdout");
 
-            println!("");
+        std::io::stdin().read_line(&mut command).expect("Unable to read input");
 
-            // println!("{:?} {:?}", a, b);
-            let c = Cramer::new(a, b);
+        let mut n = String::new();
+        print!("Input the value of n for your n x n matrix: ");
+        std::io::stdout().flush().expect("Unable to flush stdout");
 
-            c.solve();
-        },
-        "g" | "gauss" | "gaussian" => {
-            let a = get_input(args[2].to_owned());
-            let b = get_b_input(args[2].to_owned());
-
-            println!("");
-
-            // println!("{:?} {:?}", a, b);
-            let r = Gaussian::new(a, b);
-
-            r.solve();
-
-        }
-        _ => {}
+        std::io::stdin().read_line(&mut n).expect("Unable to read input");
+        run(command.trim().to_string(), n.trim().to_string());
     }
+    
+
+        
+    println!("----------------------");
+    print!("Press any key to exit!");
+    std::io::stdout().flush().expect("Unable to flush stdout");
+    let _ = std::io::stdin().read(&mut []).expect("Unable to read input");
 }
 
+// fn run (args[1])
 pub fn check_invalid_matrix_size(size_arg: String) -> Result<usize, ()> {
     
     let size = size_arg.parse::<usize>();
@@ -176,48 +173,38 @@ impl Cramer {
 }
 
 
-pub fn run(size_arg: String) {
-    let size = size_arg.parse::<usize>();
+pub fn run(command: String, n: String) {
     
-    if size.is_err(){
-        eprintln!("Pass in a valid matrix size [1, 4]");
-        return
-    }
-
-    let n = size.unwrap();
-
-    if n < 2 || n > 4 {
-        eprintln!("Pass in a valid matrix size [2, 4]");
-        return
-    }
-
-    let mut matrix = Vec::new();
-    for i in 0..n {
-        print!("Input row {}: ", i + 1);
-        let _ = std::io::stdout().flush();
-
-        let mut input = String::new();
-        let _ = std::io::stdin().read_line(&mut input);
-
-        let v = input.split_whitespace().map(|x| x.parse::<i32>().expect("Invalid integer passed")).collect::<Vec<i32>>();
-        if v.len() != n {
-            eprintln!("Your input must have a length of {}", n);
-            return
+        
+    match command.as_str() {
+        "c" | "cramer"  => {
+            let a = get_input(n.to_owned());
+            let b = get_b_input(n.to_owned());
+            
+            println!("");
+            
+            // println!("{:?} {:?}", a, b);
+            let c = Cramer::new(a, b);
+            
+            c.solve();
+        },
+        "g" | "gauss" | "gaussian" => {
+            let a = get_input(n.to_owned());
+            let b = get_b_input(n.to_owned());
+            
+            println!("");
+            
+            // println!("{:?} {:?}", a, b);
+            let r = Gaussian::new(a, b);
+            
+            r.solve();
+            
         }
-
-        matrix.push(v);
+        k => {
+            println!("{k:?}");
+            eprintln!("Invalid command")
+        }
     }
-
-    println!("");
-    let e = match n {
-        2 => {solve_2x2(&Matrix2X2::from_vec(matrix).0)},
-        3 => {solve_3x3(&Matrix3X3::from_vec(matrix).0)},
-        4 => {solve_4x4(&Matrix4X4::from_vec(matrix).0)},
-        _ => { -1}
-    };
-
-    println!("");
-    println!("Ans: {e}");
 
 
 }
@@ -300,7 +287,7 @@ fn rf(row: &[i32]) -> String {
 }
 
 fn format_as_matrix_row(row: &[i32]) -> String {
-    return format!("｜{}｜", row.iter().map(|x| format!("{x:>3} ")).collect::<String>().trim_end())
+    return format!("|{}|", row.iter().map(|x| format!("{x:>3} ")).collect::<String>().trim_end())
 }
 
 pub fn solve_3x3(matrix: &[[i32; 3]; 3]) -> i32{

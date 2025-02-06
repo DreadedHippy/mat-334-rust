@@ -8,7 +8,8 @@ This is a Rust project with 0 external dependencies that solves some math proble
 
 ### Prerequisites
 
-- Rust programming language installed on your machine. You can download it from [here](https://www.rust-lang.org/tools/install).
+- Rust programming language installed on your machine. You can download it from [here](https://www.rust-lang.org/tools/install). If you do not have Rust installed, you can use the [alternative method](#alternative-use)
+
 
 ### Running the Project
 
@@ -37,6 +38,10 @@ For equations with no solution, the program crashes
 | ------------- | ------------- |
 | Cramer's Rule | `cramer`, `c`  |
 | Gaussian Elimination  | `gaussian`, `g`, `gauss` |
+
+### Alternative Use
+If you do not have rust installed, you can download the latest release from [here](https://github.com/DreadedHippy/mat-334-rust/releases) and run the .exe file on your system
+
 
 ## License
 
