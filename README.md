@@ -1,5 +1,4 @@
 # Matrix Calculator
-
 This is a Rust project with 0 external dependencies that solves some math problems, including:
 
 - Finding the solutions to linear equations using Gaussian Elimination and Cramer's rule of matrices.
