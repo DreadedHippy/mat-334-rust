@@ -37,6 +37,7 @@ For equations with no solution, the program crashes
 | ------------- | ------------- |
 | Cramer's Rule | `cramer`, `c`  |
 | Gaussian Elimination  | `gaussian`, `g`, `gauss` |
+| Matrix Inversion  | `inversion`, `i`, `inverse` |
 
 ### Alternative Use
 If you do not have rust installed, you can download the latest release from [here](https://github.com/DreadedHippy/mat-334-rust/releases) and run the .exe file on your system

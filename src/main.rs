@@ -1,9 +1,12 @@
 use std::{io::{Read, Write}, panic};
 
 use gaussian::Gaussian;
+use inversion::MatrixInversion;
 #[allow(dead_code)]
 
 mod gaussian;
+mod inversion;
+mod determinant;
 
 fn main() {
     // println!("Hello, world!");
@@ -54,7 +57,7 @@ pub fn check_invalid_matrix_size(size_arg: String) -> Result<usize, ()> {
     Ok(n)
 }
 
-pub fn get_b_input(size_arg: String) -> Vec<i32> {
+pub fn get_b_input(size_arg: String) -> Vec<f64> {
     let n = if let Ok(size) = check_invalid_matrix_size(size_arg) {
         size
     } else { panic!() };
@@ -67,7 +70,7 @@ pub fn get_b_input(size_arg: String) -> Vec<i32> {
     let mut input = String::new();
     let _ = std::io::stdin().read_line(&mut input);
 
-    let v = input.split_whitespace().map(|x| x.parse::<i32>().expect("Invalid integer passed")).collect::<Vec<i32>>();
+    let v = input.split_whitespace().map(|x| x.parse::<f64>().expect("Invalid integer passed")).collect::<Vec<f64>>();
     if v.len() != n {
         eprintln!("Your input must have a length of {}", n);
         panic!()
@@ -78,7 +81,7 @@ pub fn get_b_input(size_arg: String) -> Vec<i32> {
 
 }
 
-pub fn get_input(size_arg: String) -> Vec<Vec<i32>>{
+pub fn get_input(size_arg: String) -> Vec<Vec<f64>>{
     let n = if let Ok(size) = check_invalid_matrix_size(size_arg) {
         size
     } else { panic!() };
@@ -91,7 +94,7 @@ pub fn get_input(size_arg: String) -> Vec<Vec<i32>>{
         let mut input = String::new();
         let _ = std::io::stdin().read_line(&mut input);
 
-        let v = input.split_whitespace().map(|x| x.parse::<i32>().expect("Invalid integer passed")).collect::<Vec<i32>>();
+        let v = input.split_whitespace().map(|x| x.parse::<f64>().expect("Invalid integer passed")).collect::<Vec<f64>>();
         if v.len() != n {
             eprintln!("Your input must have a length of {}", n);
             panic!()
@@ -103,12 +106,12 @@ pub fn get_input(size_arg: String) -> Vec<Vec<i32>>{
     return matrix;
 }
 pub struct Cramer {
-    a: Vec<Vec<i32>>,
-    b: Vec<i32>
+    a: Vec<Vec<f64>>,
+    b: Vec<f64>
 }
 
 impl Cramer {
-    pub fn new(a: Vec<Vec<i32>>, b: Vec<i32>) -> Self {
+    pub fn new(a: Vec<Vec<f64>>, b: Vec<f64>) -> Self {
         
         if a.len() <= 1 || a.len() > 4 || a.len() != b.len(){
             panic!("Cramer can only take an n by n matrix; n ∈ [2, 4] ")
@@ -130,7 +133,7 @@ impl Cramer {
         let n = self.a.len();
         let det = Self::get_determinant(self.a.clone());
 
-        let mut x = vec![-1; n];
+        let mut x = vec![-1.0; n];
 
         for i in 0..n {
             let current = self.get_a_b_substitution(i);
@@ -147,20 +150,20 @@ impl Cramer {
         println!("{:#?}", x);
     }
 
-    fn get_determinant(matrix: Vec<Vec<i32>>) -> i32{
+    fn get_determinant(matrix: Vec<Vec<f64>>) -> f64{
         let n = matrix.len();
 
         let e = match n {
             2 => {solve_2x2(&Matrix2X2::from_vec(matrix).0)},
             3 => {solve_3x3(&Matrix3X3::from_vec(matrix).0)},
             4 => {solve_4x4(&Matrix4X4::from_vec(matrix).0)},
-            _ => { -1}
+            _ => { -1.0}
         };
 
         return e
     }
 
-    fn get_a_b_substitution(&self, index: usize) -> Vec<Vec<i32>> {
+    fn get_a_b_substitution(&self, index: usize) -> Vec<Vec<f64>> {
         let mut new = self.a.clone();
         let n = new.len();
 
@@ -199,6 +202,17 @@ pub fn run(command: String, n: String) {
             
             r.solve();
             
+        },
+        "i" | "inversion" | "inverse" => {
+            let a = get_input(n.to_owned());
+            let b = get_b_input(n.to_owned());
+            
+            println!("");
+            
+            let mut r = MatrixInversion::new(a, b);
+            
+            r.solve();
+            
         }
         k => {
             println!("{k:?}");
@@ -209,12 +223,12 @@ pub fn run(command: String, n: String) {
 
 }
 
-pub struct Matrix4X4(pub [[i32; 4]; 4]);
-pub struct Matrix3X3(pub [[i32; 3]; 3]);
-pub struct Matrix2X2(pub [[i32; 2]; 2]);
+pub struct Matrix4X4(pub [[f64; 4]; 4]);
+pub struct Matrix3X3(pub [[f64; 3]; 3]);
+pub struct Matrix2X2(pub [[f64; 2]; 2]);
 
 impl Matrix2X2 {
-    pub fn from_vec(v: Vec<Vec<i32>>) -> Self {
+    pub fn from_vec(v: Vec<Vec<f64>>) -> Self {
         Self([
             [v[0][0], v[0][1]],
             [v[1][0], v[1][1]]
@@ -224,7 +238,7 @@ impl Matrix2X2 {
 
 
 impl Matrix3X3 {
-    pub fn from_vec(v: Vec<Vec<i32>>) -> Self {
+    pub fn from_vec(v: Vec<Vec<f64>>) -> Self {
         Self([
             [v[0][0], v[0][1], v[0][2]],
             [v[1][0], v[1][1], v[1][2]],
@@ -234,7 +248,7 @@ impl Matrix3X3 {
 }
 
 impl Matrix4X4 {
-    pub fn from_vec(v: Vec<Vec<i32>>) -> Self {
+    pub fn from_vec(v: Vec<Vec<f64>>) -> Self {
         Self([
             [v[0][0], v[0][1], v[0][2], v[0][3]],
             [v[1][0], v[1][1], v[1][2], v[1][3]],
@@ -244,7 +258,7 @@ impl Matrix4X4 {
     }
 }
 
-pub fn solve_4x4(matrix: &[[i32; 4]; 4]) -> i32{
+pub fn solve_4x4(matrix: &[[f64; 4]; 4]) -> f64{
     let (a, b, c, d) = (matrix[0][0], matrix[0][1], matrix[0][2], matrix[0][3]);
     let (e, f, g, h) = (matrix[1][0], matrix[1][1], matrix[1][2], matrix[1][3]);
     let (i, j, k, l) = (matrix[2][0], matrix[2][1], matrix[2][2], matrix[2][3]);
@@ -282,15 +296,15 @@ pub fn solve_4x4(matrix: &[[i32; 4]; 4]) -> i32{
     
 }
 
-fn rf(row: &[i32]) -> String {
+fn rf(row: &[f64]) -> String {
     format_as_matrix_row(row)
 }
 
-fn format_as_matrix_row(row: &[i32]) -> String {
+fn format_as_matrix_row(row: &[f64]) -> String {
     return format!("|{}|", row.iter().map(|x| format!("{x:>3} ")).collect::<String>().trim_end())
 }
 
-pub fn solve_3x3(matrix: &[[i32; 3]; 3]) -> i32{
+pub fn solve_3x3(matrix: &[[f64; 3]; 3]) -> f64{
     let (a, b, c) = (matrix[0][0], matrix[0][1], matrix[0][2]);
     let (d, e, f) = (matrix[1][0], matrix[1][1], matrix[1][2]);
     let (g, h, i) = (matrix[2][0], matrix[2][1], matrix[2][2]);
@@ -323,7 +337,7 @@ pub fn solve_3x3(matrix: &[[i32; 3]; 3]) -> i32{
     return res;
 }
 
-pub fn solve_2x2(matrix: &[[i32; 2]; 2]) -> i32{
+pub fn solve_2x2(matrix: &[[f64; 2]; 2]) -> f64{
     let (a, b) = (matrix[0][0], matrix[0][1]);
     let (c, d) = (matrix[1][0], matrix[1][1]);
 
@@ -335,4 +349,51 @@ pub fn solve_2x2(matrix: &[[i32; 2]; 2]) -> i32{
 
     return res;
 
+}
+
+pub fn matrix_mult(a: &Vec<Vec<f64>>, b: Vec<Vec<f64>>) -> Result<Vec<Vec<f64>>, String>{
+    if a[0].len() != b.len() {
+        return Err("Number of columns in 'a' must be equal to number of rows in 'b'".to_string())
+    }
+
+    let ar = a.len();
+    let bc = b[0].len();
+
+    let mut result = Vec::new();
+
+    let p = b.len();
+
+    for ai in 0..ar {
+        let mut result_row = Vec::new();
+
+        for bj in 0..bc {
+            let mut value = 0.0;
+
+            for p in 0..p {
+                value += a[ai][p] * b[p][bj];
+            }
+
+            result_row.push(value);
+        }
+
+        result.push(result_row);
+    }
+
+    Ok(result)
+}
+
+pub fn scalar_mult(matrix: &Vec<Vec<f64>>, s: f64) -> Vec<Vec<f64>> {
+    let r = matrix.len();
+    let c = matrix[0].len();
+
+    let mut result = Vec::new();
+    for i in 0..r {
+        let mut row = Vec::new();
+        for j in 0..c {
+            row.push(matrix[i][j] * s);
+        }
+        result.push(row);
+    }
+
+    return result;
 }
