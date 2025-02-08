@@ -107,7 +107,7 @@ impl LUDecomposition {
 
 		println!("The given matrix A can be expressed as LU where...\n");
 		
-		println!("A = |A11 A12 A12 |, L = | L22 0   0   |,  U = | 1   U12 U13 |");
+		println!("A = |A11 A12 A12 |, L = | L11 0   0   |,  U = | 1   U12 U13 |");
 		println!("A = |A21 A22 A23 |  L = | L21 L22 0   |   U = | 0   1   U23 |");
 		println!("A = |A31 A32 A33 |  L = | L31 L32 L33 |   U = | 0   0   1   |");
 
