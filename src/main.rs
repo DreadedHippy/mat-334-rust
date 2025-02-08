@@ -2,11 +2,13 @@ use std::{io::{Read, Write}, panic};
 
 use gaussian::Gaussian;
 use inversion::MatrixInversion;
+use lu_decomposition::LUDecomposition;
 #[allow(dead_code)]
 
 mod gaussian;
 mod inversion;
 mod determinant;
+mod lu_decomposition;
 
 fn main() {
     // println!("Hello, world!");
@@ -213,7 +215,18 @@ pub fn run(command: String, n: String) {
             
             r.solve();
             
-        }
+        },
+        "f" | "lu" | "factorization" | "lud" => {
+            let a = get_input(n.to_owned());
+            let b = get_b_input(n.to_owned());
+            
+            println!("");
+            
+            let mut r = LUDecomposition::new(a, b);
+            
+            r.solve();
+            
+        },
         k => {
             println!("{k:?}");
             eprintln!("Invalid command")
