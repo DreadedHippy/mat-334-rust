@@ -29,7 +29,8 @@ cargo run -- gaussian 3
 This command will run the Gaussian Elimination method on a 3x3 matrix.
 
 ## Note
-For equations with no solution, the program crashes
+- For equations with no solution, the program crashes
+- Gaussian elimination does not yet suppo
 
 ### Command Aliases
 

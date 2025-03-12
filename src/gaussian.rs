@@ -37,14 +37,47 @@ impl Gaussian {
 		}
 	}
 
+	pub fn row_swap<const N: usize>(a: &mut [[f64; N]; N], b: &mut [f64; N], i: usize) -> Option<()> {
+		if i >= a.len() {
+			return None
+		}
+
+		if a[i][i] != 0.0 { return Some(())}
+
+		let n = a.len();
+
+		for j in i..n {
+			if a[j][i] != 0.0 {
+				let i_format = format!("<-- R{} = R{}", i, j);
+				let j_format = format!("<-- R{} = R{}", j, i);
+
+				for k in 0..n {
+					println!("{} ¦ {} {}", rf(&a[k]), rf(&[b[k]]), if k == i {&i_format} else if k == j {&j_format} else {""})
+				}
+
+				(a[i], a[j]) = (a[j], a[i]);
+				(b[i], b[j]) = (b[j], b[i]);
+
+				println!("");
+				
+				return Some(())
+			}
+		}
+
+		None
+
+	}
+
+	fn row_swap_err() {println!("Row swapping failed. Unable to proceed further");}
+
 	pub fn c(i: f64) -> String {
 		if i == 1.0 {String::new()} else if i == -1.0 {"-".to_string()} else {i.to_string()}
 	}
 
 	pub fn solve_4x4(mut a: [[f64; 4]; 4], mut b: [f64; 4]) {
 		let mut y = 0;
-		// step 1
-		// let (r2, r3, r4) = (lcm(a[1][y], a[y][y]), lcm(a[2][y], a[y][y]), lcm(a[3][y], a[y][y]));
+		let Some(_) = Self::row_swap(&mut a, &mut b, y) else {Self::row_swap_err(); return};
+
 		let r2c = (a[1][y], a[y][y]);
 		let r3c = (a[2][y], a[y][y]);
 		let r4c = (a[3][y], a[y][y]);
@@ -69,6 +102,8 @@ impl Gaussian {
 		
 		// step 2
 		y = 1;
+		let Some(_) = Self::row_swap(&mut a, &mut b, y) else {Self::row_swap_err(); return};
+
 		let r3c = (a[2][y], a[y][y]);
 		let r4c = (a[3][y], a[y][y]);
 
@@ -92,9 +127,9 @@ impl Gaussian {
 				
 		// step 3
 		y = 2;
-		let r4c = (a[3][y], a[y][y]);
+		let Some(_) = Self::row_swap(&mut a, &mut b, y) else {Self::row_swap_err(); return};
 
-		
+		let r4c = (a[3][y], a[y][y]);
 
 		println!("");
 
@@ -112,7 +147,6 @@ impl Gaussian {
 		b[3] = (r4c.0 * b[y]) - (r4c.1 * b[3]);
 
 		println!("");
-
 		y += 1;
 
 		for i in 0..=y {
@@ -153,8 +187,11 @@ impl Gaussian {
 
 	pub fn solve_3x3(mut a: [[f64; 3]; 3], mut b: [f64; 3]) {
 		let n = 3;
-		let mut y = 0;
+		
 		// step 1
+		let mut y = 0;
+		let Some(_) = Self::row_swap(&mut a, &mut b, y) else {Self::row_swap_err(); return};
+
 		let r2c = (a[1][y], a[y][y]);
 		let r3c = (a[2][y], a[y][y]);
 
@@ -176,6 +213,7 @@ impl Gaussian {
 		
 		// step 2
 		y = 1;
+		let Some(_) = Self::row_swap(&mut a, &mut b, y) else {Self::row_swap_err(); return};
 		let r3c = (a[2][y], a[y][y]);
 
 		println!("");
